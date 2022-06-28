@@ -47,15 +47,42 @@ public class FXMLController {
     void doRiempiLocali(ActionEvent event) {
     	this.cmbLocale.getItems().clear();
     	String citta = this.cmbCitta.getValue();
-    	if(citta != null) {
-    		//TODO popolare la tendina dei locali per la città selezionata
-    		
+    	try {
+    		if(citta != null) {
+        		//TODO popolare la tendina dei locali per la città selezionata
+        		cmbLocale.getItems().addAll(model.getLocali(citta));
+        		
+        	}else {
+        		txtResult.appendText("inserire citta");
+        		return;
+        	}
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    		txtResult.appendText("error");
+    		return;
     	}
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-    	
+    	if(cmbLocale.getValue()!=null) {
+			
+			String s = cmbLocale.getValue().getBusinessId();
+    		if(cmbLocale.getValue().getBusinessId() != null) {
+    			model.creaGrafo(cmbCitta.getValue(), s);
+    			txtResult.appendText("vertici :"+model.nVertici()+"\n");
+    			txtResult.appendText("archi :"+model.nEdge()+"\n");
+    			txtResult.appendText(""+model.getArchiUscenti()+"\n");
+    		}
+    		else {
+    			txtResult.appendText("non hai inserito un locale");
+    			return;
+    		}
+		}else {
+			txtResult.appendText("qual'è l'errore?");
+			return;
+		}
+		
     }
 
     @FXML
@@ -75,5 +102,6 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	cmbCitta.getItems().addAll(model.getCitta());
     }
 }
